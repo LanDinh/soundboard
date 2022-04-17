@@ -1,3 +1,27 @@
+<style>
+  .transcription {
+    width: 300px;
+  }
+
+</style>
+<script>
+  function onPlay(ev) {
+    const id = ev.target.dataset.id;
+    document.getElementById(`sound-${id}`).querySelector('*[name="transcription"]').focus();
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const hash = window.location.hash;
+    if (hash?.match(/^#next-\d+$/)) {
+      const cur = document.getElementById(`sound-${hash.slice('#next-'.length)}`);
+      const next = cur.nextElementSibling;
+      (next || cur).querySelector('audio').focus();
+    } else {
+      // Focus first audio.
+      document.querySelector('audio').focus();
+    }
+  });
+</script>
 <h1>Sounds</h1>
 <ul>
 {% for origin in object_list %}
@@ -5,9 +29,17 @@
       {{ origin.name }}
       <ul>
       {% for sound in origin.sounds.all %}
-        <li>
-          {{ sound.name }} <br />
-          <audio controls id='player' preload='none'><source src='/data/{{ sound.id }}/download/' type='{{ sound.type }}' /></audio>
+        <li id="sound-{{ sound.id }}">
+          <form method="post">
+            {{ sound.name }} <br />
+            <audio controls preload="none" onplay="onPlay(event)" data-id="{{ sound.id }}">
+              <source src="/data/{{ sound.id }}/download/" type="{{ sound.type }}"/>
+            </audio><br>
+            {% csrf_token %}
+            <input type="hidden" name="id" value="{{ sound.id }}">
+            <label>Text: <input name="transcription" class="transcription" value="{{ sound.transcription }}"></label><br>
+            <label>Title: <input name="name" value="{{ sound.name }}"></label> <input type="submit" value="Save">
+          </form>
         </li>
       {% empty %}
         <li>No sounds yet.</li>
