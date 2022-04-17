@@ -3,11 +3,42 @@
     width: 300px;
   }
 
+  .rating-active {
+    font-weight: bold;
+    border: 3px solid #000;
+  }
+
 </style>
 <script>
+  function idFromElement(el) {
+    while (el !== document) {
+      const id = el.dataset.id;
+      if (id) {
+        return id;
+      }
+      el = el.parentNode;
+    }
+  }
+
+  function soundRoot(id) {
+    return document.getElementById(`sound-${id}`);
+  }
+
   function onPlay(ev) {
-    const id = ev.target.dataset.id;
-    document.getElementById(`sound-${id}`).querySelector('*[name="transcription"]').focus();
+    const id = idFromElement(ev.target);
+    soundRoot(id).querySelector('*[name="transcription"]').focus();
+  }
+
+  function setRating(ev, rating) {
+    ev.preventDefault();
+    const id = idFromElement(ev.target);
+    const root = soundRoot(id);
+    for (const el of root.querySelectorAll('.rating-active')) {
+      el.classList.remove('rating-active');
+    }
+    root.querySelector('*[name="rating"]').value = rating;
+    ev.target.classList.add('rating-active');
+
   }
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -29,16 +60,30 @@
       {{ origin.name }}
       <ul>
       {% for sound in origin.sounds.all %}
-        <li id="sound-{{ sound.id }}">
+        <li id="sound-{{ sound.id }}" data-id="{{ sound.id }}">
           <form method="post">
             {{ sound.name }} <br />
-            <audio controls preload="none" onplay="onPlay(event)" data-id="{{ sound.id }}">
+            <audio controls preload="none" onplay="onPlay(event)">
               <source src="/data/{{ sound.id }}/download/" type="{{ sound.type }}"/>
-            </audio><br>
+            </audio>
+            <br>
             {% csrf_token %}
             <input type="hidden" name="id" value="{{ sound.id }}">
-            <label>Text: <input name="transcription" class="transcription" value="{{ sound.transcription }}"></label><br>
-            <label>Title: <input name="name" value="{{ sound.name }}"></label> <input type="submit" value="Save">
+            <p>
+              <label>Text: <input name="transcription" class="transcription" value="{{ sound.transcription }}"></label><br>
+            </p>
+            <p>
+              <label>
+                Rating:
+                <button type="button" onclick="setRating(event, 'good')" class="{% if sound.rating == 'good' %}rating-active {% endif %}">👍</button>
+                <button type="button" onclick="setRating(event, 'bad')" class="{% if sound.rating == 'bad' %}rating-active {% endif %}">👎</button>
+                <input type="hidden" name="rating" value="{{ sound.rating }}">
+              </label>
+            </p>
+            <p>
+              <label>Title: <input name="name" value="{{ sound.name }}"></label>
+            </p>
+            <input type="submit" value="Save">
           </form>
         </li>
       {% empty %}

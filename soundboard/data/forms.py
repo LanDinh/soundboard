@@ -5,4 +5,4 @@ from .models import Sound
 class SoundEditForm(ModelForm):
     class Meta:
         model = Sound
-        fields = ['name', 'transcription']
+        fields = ['name', 'rating', 'transcription']
