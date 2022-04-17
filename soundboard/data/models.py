@@ -2,7 +2,7 @@ from django.db import models
 
 
 def get_sound_file_path(instance, filename):
-    return f'data/{instance.origin.name}/{instance.language}/{filename}'
+    return f'sounds/{instance.origin.name}/{instance.language}/{filename}'
     
     
 class Locale:

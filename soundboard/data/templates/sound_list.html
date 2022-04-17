@@ -5,7 +5,7 @@
       {{ origin.name }}
       <ul>
       {% for sound in origin.sounds.all %}
-        <li><a href='{{sound.name}}'>{{ sound.name }}</a></li>
+        <li><audio controls id="player"><source src="/data/{{ sound.id }}/download/" type='audio/wav'></audio></li>
       {% empty %}
         <li>No sounds yet.</li>
       {% endfor %}

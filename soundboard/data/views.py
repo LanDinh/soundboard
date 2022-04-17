@@ -12,3 +12,9 @@ class SoundListView(ListView):
     
     def get_queryset(self):
         return Origin.objects.prefetch_related('sounds').all().order_by('name')
+        
+def get_sound(request, id):
+    sound = Sound.objects.get(id=id)
+    filename = sound.file.name.split('/')[-1]
+    response = HttpResponse(sound.file, content_type='audio/wav') 
+    return response
