@@ -21,7 +21,7 @@ class Origin(models.Model):
 
 
 class Sound(models.Model):
-    origin = models.ForeignKey(Origin, on_delete=models.CASCADE)
+    origin = models.ForeignKey(Origin, on_delete=models.CASCADE, related_name='sounds')
     name = models.CharField(max_length=1000)
     file = models.FileField(upload_to=get_sound_file_path)
     type = models.CharField(max_length=100)

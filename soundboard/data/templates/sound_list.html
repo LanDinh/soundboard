@@ -1,0 +1,17 @@
+<h1>Sounds</h1>
+<ul>
+{% for origin in object_list %}
+    <li>
+      {{ origin.name }}
+      <ul>
+      {% for sound in origin.sounds.all %}
+        <li><a href='{{sound.name}}'>{{ sound.name }}</a></li>
+      {% empty %}
+        <li>No sounds yet.</li>
+      {% endfor %}
+      </ul>
+    </li>
+{% empty %}
+    <li>No origins yet.</li>
+{% endfor %}
+</ul>
