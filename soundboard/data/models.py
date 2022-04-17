@@ -16,6 +16,16 @@ class Locale:
     ]
 
 
+class Rating:
+    GOOD = 'good'
+    BAD = 'bad'
+
+    choices = [
+        (GOOD, 'Good'),
+        (BAD, 'Bad'),
+    ]
+
+
 class FileType:
     MP3 = 'audio/mp3'
     WAV = 'audio/wav'
@@ -53,6 +63,7 @@ class Sound(models.Model):
     type = models.CharField(max_length=30, choices=FileType.choices)
     transcription = models.TextField(blank=True)
     language = models.CharField(max_length=10, choices=Locale.choices)
+    rating = models.CharField(max_length=5, choices=Rating.choices, blank=True, default='')
 
     def save(self, *args, **kwargs):
         self.type = FileType.from_filename(self.file.name)
