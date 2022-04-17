@@ -7,7 +7,7 @@
       {% for sound in origin.sounds.all %}
         <li>
           {{ sound.name }} <br />
-          <audio controls id='player' preload='none'><source src='/data/{{ sound.id }}/download/' type='audio/wav' /></audio>
+          <audio controls id='player' preload='none'><source src='/data/{{ sound.id }}/download/' type='{{ sound.type }}' /></audio>
         </li>
       {% empty %}
         <li>No sounds yet.</li>

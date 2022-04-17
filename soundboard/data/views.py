@@ -16,5 +16,5 @@ class SoundListView(ListView):
 def get_sound(request, id):
     sound = Sound.objects.get(id=id)
     filename = sound.file.name.split('/')[-1]
-    response = HttpResponse(sound.file, content_type='audio/wav') 
+    response = HttpResponse(sound.file, content_type=sound.type)
     return response
